@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+  backend:
+    build: ./backend
+    command: npm run dev
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/ecommerce
+      - JWT_SECRET=devsecret
+      - FRONTEND_URL=http://localhost:3000
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongo
+  frontend:
+    build: ./frontend
+    command: npm run dev
+    volumes:
+      - ./frontend:/usr/src/app
+    ports:
+      - "3000:3000"
+volumes:
+  mongo-data:
